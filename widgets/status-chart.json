@@ -1,1 +1,1 @@
-[{"uid":"bf2e04626884e325","name":"naoDeveAcessarAPISemToke()","time":{"start":1724428371210,"stop":1724428372636,"duration":1426},"status":"passed","severity":"normal"}]
+[{"uid":"3ee32ea6cdcf8d81","name":"Não deve acessar o recurso /contas sem token","time":{"start":1724429137758,"stop":1724429139080,"duration":1322},"status":"passed","severity":"normal"}]
