@@ -1,0 +1,2 @@
+"Status","Start Time","Stop Time","Duration in ms","Parent Suite","Suite","Sub Suite","Test Class","Test Method","Name","Description"
+"passed","Fri Aug 23 15:38:42 UTC 2024","Fri Aug 23 15:38:43 UTC 2024","1346","","br.ce.wcaquino.rest.tests.BarrigaTest","","br.ce.wcaquino.rest.tests.BarrigaTest","naoDeveAcessarAPISemToke","naoDeveAcessarAPISemToke()",""
