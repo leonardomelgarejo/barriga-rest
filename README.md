@@ -77,5 +77,5 @@ mvn clean test
       * mvn allure:report : Irá gerar o HTML na pasta target/site/allure-maven-plugin
     * O local onde o arquivos arquivos referência para o relatório são definidos no src/test/resources/allure.properties
     * Remotamente, acessando o link abaixo:
-      * https://leonardomelgarejo.github.io/
+      * https://leonardomelgarejo.github.io/barriga-rest/
     
