@@ -1,2 +1,2 @@
 "Status","Start Time","Stop Time","Duration in ms","Parent Suite","Suite","Sub Suite","Test Class","Test Method","Name","Description"
-"passed","Mon Aug 26 09:12:01 UTC 2024","Mon Aug 26 09:12:02 UTC 2024","1570","","BarrigaTest","","br.ce.wcaquino.rest.tests.BarrigaTest","naoDeveAcessarAPISemToken","Não deve acessar o recurso /contas sem token",""
+"passed","Mon Aug 26 09:14:54 UTC 2024","Mon Aug 26 09:14:55 UTC 2024","1535","","BarrigaTest","","br.ce.wcaquino.rest.tests.BarrigaTest","naoDeveAcessarAPISemToken","Não deve acessar o recurso /contas sem token",""
