@@ -1,3 +1,5 @@
+[![GHA-CI](https://github.com/leonardomelgarejo/barriga-rest/actions/workflows/gha-ci.yml/badge.svg)](https://github.com/leonardomelgarejo/barriga-rest/actions/workflows/gha-ci.yml)
+
 # Projeto de automação de testes da API barrigarest
 
 ## Descrição
