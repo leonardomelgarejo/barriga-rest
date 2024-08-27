@@ -1,6 +1,6 @@
 package br.ce.wcaquino.rest.tests;
 
-public class Movimentacao {
+public class MovimentacaoTest {
 
     private Integer id;
     private String descricao;

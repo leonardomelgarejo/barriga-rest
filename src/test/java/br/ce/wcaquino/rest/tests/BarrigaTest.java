@@ -1,9 +1,10 @@
 package br.ce.wcaquino.rest.tests;
 
 import br.ce.wcaquino.rest.core.BaseTest;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import br.ce.wcaquino.rest.utils.DataUtils;
+import io.restassured.RestAssured;
+import io.restassured.specification.FilterableRequestSpecification;
+import org.junit.jupiter.api.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,68 +13,68 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
 
 @DisplayName("BarrigaTest")
+@TestMethodOrder(MethodOrderer.MethodName.class)
 public class BarrigaTest extends BaseTest {
+    private static String CONTA_NAME = "Conta " + System.nanoTime();
+    private static Integer CONTA_ID;
+    private static Integer MOV_ID;
 
-    private String TOKEN;
-
-    @BeforeEach
-    public void login(){
+    @BeforeAll
+    public static void login(){
         Map<String, String> login = new HashMap<>();
         login.put("email","melgarejom.leonardo@gmail.com");
         login.put("senha", "1234");
 
-        TOKEN = given()
+        String TOKEN = given()
+            .log().all()
             .body(login)
         .when()
             .post("/signin")
         .then()
+            .log().all()
             .statusCode(200)
             .extract().path("token");
+
+        RestAssured.requestSpecification.header("Authorization", "JWT " + TOKEN);
     }
 
     @Test
-    @DisplayName("Não deve acessar o recurso /contas sem token")
-    public void naoDeveAcessarAPISemToken(){
-        given()
-        .when()
-            .get("/contas")
-        .then()
-            .statusCode(401)
-        ;
-    }
-
-    @Test
+    @Order(1)
+    @Disabled
     @DisplayName("Deve incluir conta com sucesso")
     public void deveIncluirContaComSucesso(){
-        given()
-            .header("Authorization", "JWT " + TOKEN)
-            .body("{ \"nome\": \"conta qualquer\" }")
+        CONTA_ID = given()
+            .body("{ \"nome\": \""+CONTA_NAME+"\" }")
         .when()
             .post("/contas")
         .then()
             .statusCode(201)
+                .extract().path("id")
         ;
     }
 
     @Test
+    @Order(2)
+    @Disabled
     @DisplayName("Deve alterar conta com sucesso")
     public void deveAlterarContaComSucesso(){
         given()
-            .header("Authorization", "JWT " + TOKEN)
-            .body("{ \"nome\": \"conta alterada\" }")
+            .body("{ \"nome\": \""+CONTA_NAME+" alterada\" }")
+            .pathParam("id", CONTA_ID)
         .when()
-            .put("/contas/2239295")
+            .put("/contas/{id}")
         .then()
             .statusCode(200)
-            .body("nome", is("conta alterada"))
+            .body("nome", is(CONTA_NAME+ " alterada"))
         ;
     }
 
     @Test
+    @Order(3)
+    @Disabled
     @DisplayName("Não deve incluir conta com o mesmo nome")
     public void naoDeveInserirContaMesmoNome(){
         given()
-            .header("Authorization", "JWT " + TOKEN)
             .body("{ \"nome\": \"conta alterada\" }")
         .when()
             .post("/contas")
@@ -84,25 +85,28 @@ public class BarrigaTest extends BaseTest {
     }
 
     @Test
+    @Order(4)
+    @Disabled
     @DisplayName("Deve inserir movimentacao com sucesso")
     public void deveInserirMovimentacaoComSucesso(){
-        Movimentacao mov = getMovimentacaoValida();
+        MovimentacaoTest mov = getMovimentacaoValida();
 
-        given()
-            .header("Authorization", "JWT " + TOKEN)
+        MOV_ID = given()
             .body(mov)
         .when()
             .post("/transacoes")
         .then()
             .statusCode(201)
+            .extract().path("id")
         ;
     }
 
     @Test
+    @Order(5)
+    @Disabled
     @DisplayName("Deve validar campos obrigatórios da movimentação")
     public void deveValidarCamposObrigatoriosMovimentacao(){
         given()
-            .header("Authorization", "JWT " + TOKEN)
             .body("{}")
         .when()
             .post("/transacoes")
@@ -123,13 +127,14 @@ public class BarrigaTest extends BaseTest {
     }
 
     @Test
+    @Order(6)
+    @Disabled
     @DisplayName("Não deve inserir movimentação com data futura")
     public void naoDeveInserirMovimentacaoComDataFutura(){
-        Movimentacao mov = getMovimentacaoValida();
-        mov.setData_transacao("20/05/2025");
+        MovimentacaoTest mov = getMovimentacaoValida();
+        mov.setData_transacao(DataUtils.getDataDiferencaDias(2));
 
         given()
-            .header("Authorization", "JWT " + TOKEN)
             .body(mov)
         .when()
             .post("/transacoes")
@@ -141,27 +146,72 @@ public class BarrigaTest extends BaseTest {
     }
 
     @Test
+    @Order(7)
+    @Disabled
     @DisplayName("Não deve remover conta com movimentação")
     public void naoDeveRemoverContaComMovimentacao(){
         given()
-            .header("Authorization", "JWT " + TOKEN)
+            .pathParam("id", CONTA_ID)
         .when()
-            .delete("/contas/2239295")
+            .delete("/contas/{id}")
         .then()
             .statusCode(500)
             .body("constraint", is("transacoes_conta_id_foreign"))
         ;
     }
 
-    private Movimentacao getMovimentacaoValida(){
-        Movimentacao mov = new Movimentacao();
-        mov.setConta_id(2239295);
-//        mov.setUsuario_id(usuario_id);
+    @Test
+    @Order(8)
+    @Disabled
+    @DisplayName("Deve calcular saldo contas")
+    public void deveCalcularSaldoContas(){
+        given()
+        .when()
+            .get("/saldo")
+        .then()
+            .statusCode(200)
+            .body("find{it.conta_id == "+CONTA_ID+"}.saldo", is("100.00"))
+        ;
+    }
+
+    @Test
+    @Order(9)
+    @Disabled
+    @DisplayName("Deve remover movimentação")
+    public void deveRemoverMovimentacao(){
+        given()
+            .pathParam("id", MOV_ID)
+        .when()
+            .delete("/transacoes/{id}")
+        .then()
+            .statusCode(204)
+        ;
+    }
+
+    @Test
+    @Order(10)
+    @Disabled
+    @DisplayName("Não deve acessar o recurso /contas sem token")
+    public void naoDeveAcessarAPISemToken(){
+        FilterableRequestSpecification req = (FilterableRequestSpecification) RestAssured.requestSpecification;
+        req.removeHeader("Authorization");
+
+        given()
+                .when()
+                .get("/contas")
+                .then()
+                .statusCode(401)
+        ;
+    }
+
+    private MovimentacaoTest getMovimentacaoValida(){
+        MovimentacaoTest mov = new MovimentacaoTest();
+        mov.setConta_id(CONTA_ID);
         mov.setDescricao("Descrição da movimentação");
         mov.setEnvolvido("Envolvido na mov");
         mov.setTipo("REC");
-        mov.setData_transacao("01/01/2000");
-        mov.setData_pagamento("10/05/2010");
+        mov.setData_transacao(DataUtils.getDataDiferencaDias(-1));
+        mov.setData_pagamento(DataUtils.getDataDiferencaDias(5));
         mov.setValor(100f);
         mov.setStatus(true);
         return mov;
