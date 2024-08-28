@@ -1,6 +1,6 @@
-package br.ce.wcaquino.rest.tests.refac;
+package br.ce.wcaquino.rest.tests;
 
-import br.ce.wcaquino.rest.core.BaseTest;
+import br.ce.wcaquino.rest.BaseTest;
 import br.ce.wcaquino.rest.utils.BarrigaUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,13 +13,11 @@ public class ContasTest extends BaseTest {
     @DisplayName("Deve incluir conta com sucesso")
     public void deveIncluirContaComSucesso(){
         given()
-            .log().all()
             .body("{ \"nome\": \"Conta inserida\" }")
         .when()
             .post("/contas")
         .then()
             .statusCode(201)
-            .log().all()
         ;
     }
 

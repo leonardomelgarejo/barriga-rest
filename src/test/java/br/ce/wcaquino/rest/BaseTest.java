@@ -1,9 +1,9 @@
-package br.ce.wcaquino.rest.core;
+package br.ce.wcaquino.rest;
 
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.builder.ResponseSpecBuilder;
-import io.restassured.parsing.Parser;
+import io.restassured.specification.FilterableRequestSpecification;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeAll;
 
@@ -29,5 +29,32 @@ public class BaseTest implements Constantes {
         RestAssured.responseSpecification = resBuilder.build();
 
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
+
+        login();
+    }
+
+    public static void login() {
+        FilterableRequestSpecification req = (FilterableRequestSpecification) RestAssured.requestSpecification;
+        req.removeHeader("Authorization");
+
+        Map<String, String> login = new HashMap<>();
+        login.put("email", "melgarejom.leonardo@gmail.com");
+        login.put("senha", "1234");
+
+        String TOKEN = given()
+            .body(login)
+        .when()
+            .post("/signin")
+        .then()
+            .statusCode(200)
+            .extract().path("token");
+
+        RestAssured.requestSpecification.header("Authorization", "JWT " + TOKEN);
+
+        given()
+        .when()
+            .get("/reset")
+        .then()
+            .statusCode(200);
     }
 }

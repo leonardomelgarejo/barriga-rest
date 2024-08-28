@@ -1,4 +1,4 @@
-package br.ce.wcaquino.rest.core;
+package br.ce.wcaquino.rest;
 
 
 import io.restassured.http.ContentType;

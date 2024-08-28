@@ -1,6 +1,6 @@
-package br.ce.wcaquino.rest.tests.refac;
+package br.ce.wcaquino.rest.tests;
 
-import br.ce.wcaquino.rest.core.BaseTest;
+import br.ce.wcaquino.rest.BaseTest;
 import br.ce.wcaquino.rest.utils.BarrigaUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

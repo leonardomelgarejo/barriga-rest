@@ -1,6 +1,6 @@
-package br.ce.wcaquino.rest.tests.refac;
+package br.ce.wcaquino.rest.tests;
 
-import br.ce.wcaquino.rest.core.BaseTest;
+import br.ce.wcaquino.rest.BaseTest;
 import io.restassured.RestAssured;
 import io.restassured.specification.FilterableRequestSpecification;
 import org.junit.jupiter.api.DisplayName;
